@@ -1,6 +1,7 @@
 package ar.edu.utn.dds.k3003.extra;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,5 +30,10 @@ public class TrasladoRepo {
         Optional<Traslado> first = this.traslados.stream().filter(x -> x.getId().equals(id)).findFirst();
         return first.orElseThrow(() -> new NoSuchElementException(
                 String.format("No hay un traslado de id: %s", id)));
+    }
+
+    public List<Traslado> filterByColaboradorID(Long colaboradorId) {
+        return this.traslados.stream().filter(traslado -> traslado.getRuta().getColaboradorId().equals(colaboradorId))
+                .toList();
     }
 }

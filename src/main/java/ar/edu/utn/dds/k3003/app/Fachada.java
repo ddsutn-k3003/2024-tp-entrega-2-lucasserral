@@ -8,9 +8,11 @@ import ar.edu.utn.dds.k3003.extra.RutaMapper;
 import ar.edu.utn.dds.k3003.extra.RutaRepo;
 import ar.edu.utn.dds.k3003.extra.TrasladoMapper;
 import ar.edu.utn.dds.k3003.extra.TrasladoRepo;
+import ar.edu.utn.dds.k3003.facades.FachadaColaboradores;
 import ar.edu.utn.dds.k3003.facades.FachadaHeladeras;
 import ar.edu.utn.dds.k3003.facades.FachadaViandas;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoTrasladoEnum;
+import ar.edu.utn.dds.k3003.facades.dtos.EstadoViandaEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.RetiroDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.TrasladoDTO;
@@ -27,6 +29,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     private TrasladoMapper trasladoMapper;
     private FachadaViandas fachadaViandas;
     private FachadaHeladeras fachadaHeladeras;
+    private FachadaColaboradores facCol;
 
     public Fachada() {
         this.rutaRepo = new RutaRepo();
@@ -76,9 +79,22 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     }
 
     @Override
-    public List<TrasladoDTO> trasladosDeColaborador(Long arg0, Integer arg1, Integer arg2) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<TrasladoDTO> trasladosDeColaborador(
+            Long colaboradorId,
+            Integer heladeraOrigen, // ¿?
+            Integer heladeraDestino) { // ¿?
+        // No estoy seguro de qué debería hacer este método.
+        // Entiendo que los colaboradores van a pedir los traslados para calcular los
+        // puntos. Sin embargo no entiendo para qué son los argumentos "arg1" y "arg2".
+        // Lo único que son Integers son los Ids de heladeras. Pero, ¿Qué sentido tiene
+        // que me pasen los ids de heladera si el módulo Colaborador no conoce todas las
+        // heladeras disponibles?
+        List<Traslado> list = this.trasladoRepo.filterByColaboradorID(colaboradorId);
+        return list.stream()
+                .map(traslado -> new TrasladoDTO(traslado.getQrVianda(), traslado.getEstado(),
+                        traslado.getFechaTraslado(), traslado.getRuta().getHeladeraIdOrigen(),
+                        traslado.getRuta().getHeladeraIdDestino()))
+                .toList();
     }
 
     @Override
@@ -86,14 +102,17 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
         Traslado traslado = trasladoRepo.findById(trasladoId);
         String qrVianda = traslado.getQrVianda();
 
-        this.fachadaHeladeras.retirar(new RetiroDTO(qrVianda, null, null));
-
+        this.fachadaHeladeras.retirar(new RetiroDTO(qrVianda, null, traslado.getRuta().getHeladeraIdOrigen()));
+        this.fachadaViandas.modificarEstado(qrVianda, EstadoViandaEnum.EN_TRASLADO);
     }
 
     @Override
-    public void trasladoDepositado(Long arg0) {
-        // TODO Auto-generated method stub
+    public void trasladoDepositado(Long trasladoId) {
+        Traslado traslado = trasladoRepo.findById(trasladoId);
+        String qrVianda = traslado.getQrVianda();
 
+        this.fachadaViandas.modificarHeladera(qrVianda, traslado.getRuta().getHeladeraIdDestino());
+        this.fachadaViandas.modificarEstado(qrVianda, EstadoViandaEnum.DEPOSITADA);
     }
 
     @Override
