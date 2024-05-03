@@ -9,8 +9,10 @@ import ar.edu.utn.dds.k3003.extra.TrasladoMapper;
 import ar.edu.utn.dds.k3003.extra.TrasladoRepo;
 import ar.edu.utn.dds.k3003.facades.FachadaHeladeras;
 import ar.edu.utn.dds.k3003.facades.FachadaViandas;
+import ar.edu.utn.dds.k3003.facades.dtos.EstadoTrasladoEnum;
 import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.TrasladoDTO;
+import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
 import ar.edu.utn.dds.k3003.facades.exceptions.TrasladoNoAsignableException;
 import ar.edu.utn.dds.k3003.model.Ruta;
 import ar.edu.utn.dds.k3003.model.Traslado;
@@ -21,6 +23,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     private TrasladoRepo trasladoRepo;
     private RutaMapper rutaMapper;
     private TrasladoMapper trasladoMapper;
+    private FachadaViandas fachadaViandas;
 
     public Fachada() {
         this.rutaRepo = new RutaRepo();
@@ -39,13 +42,21 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     @Override
     public TrasladoDTO buscarXId(Long trasladoId) throws NoSuchElementException {
         Traslado tralsado = this.trasladoRepo.findById(trasladoId);
-        return new TrasladoDTO(tralsado.getQrVianda(), tralsado.getHeladeraOrigen(), tralsado.getHeladeraDestino());
+        return new TrasladoDTO(tralsado.getQrVianda(), tralsado.getRuta().getHeladeraIdOrigen(),
+                tralsado.getRuta().getHeladeraIdDestino());
     }
 
     @Override
     public TrasladoDTO asignarTraslado(TrasladoDTO trasladoDTO) throws TrasladoNoAsignableException {
-        this.
-        return null;
+        ViandaDTO viandaDTO = fachadaViandas.buscarXQR(trasladoDTO.getQrVianda());
+
+        Ruta ruta = this.rutaRepo.findByHeladeras(trasladoDTO.getHeladeraOrigen(),
+                trasladoDTO.getHeladeraDestino());
+
+        Traslado traslado = trasladoRepo.save(new Traslado(viandaDTO.getCodigoQR(), ruta, EstadoTrasladoEnum.ASIGNADO,
+                trasladoDTO.getFechaTraslado(), ruta.getColaboradorId()));
+
+        return this.trasladoMapper.map(traslado);
     }
 
     @Override
@@ -73,8 +84,8 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     }
 
     @Override
-    public void setViandasProxy(FachadaViandas arg0) {
-        // TODO Auto-generated method stub
+    public void setViandasProxy(FachadaViandas fachadaViandas) {
+        this.fachadaViandas = fachadaViandas;
 
     }
 }

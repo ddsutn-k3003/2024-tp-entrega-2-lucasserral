@@ -16,16 +16,19 @@ public class Traslado {
     private String qrVianda;
     private EstadoTrasladoEnum estado;
     private LocalDateTime fechaTraslado;
-    private Integer heladeraOrigen;
-    private Integer heladeraDestino;
+    private Ruta ruta;
     private Long colaboradorId;
 
-    public Traslado(String qrVianda, LocalDateTime fechaTraslado, Integer heladeraOrigen, Integer heladeraDestino,
+    public Traslado(
+            String qrVianda,
+            Ruta ruta,
+            EstadoTrasladoEnum estado,
+            LocalDateTime fechaTraslado,
             Long colaboradorId) {
         this.qrVianda = qrVianda;
         this.fechaTraslado = fechaTraslado;
-        this.heladeraOrigen = heladeraOrigen;
-        this.heladeraDestino = heladeraDestino;
+        this.estado = estado;
+        this.ruta = ruta;
         this.colaboradorId = colaboradorId;
     }
 }
