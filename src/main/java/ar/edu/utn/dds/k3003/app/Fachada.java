@@ -8,7 +8,6 @@ import ar.edu.utn.dds.k3003.extra.RutaMapper;
 import ar.edu.utn.dds.k3003.extra.RutaRepo;
 import ar.edu.utn.dds.k3003.extra.TrasladoMapper;
 import ar.edu.utn.dds.k3003.extra.TrasladoRepo;
-import ar.edu.utn.dds.k3003.facades.FachadaColaboradores;
 import ar.edu.utn.dds.k3003.facades.FachadaHeladeras;
 import ar.edu.utn.dds.k3003.facades.FachadaViandas;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoTrasladoEnum;
@@ -29,7 +28,6 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     private TrasladoMapper trasladoMapper;
     private FachadaViandas fachadaViandas;
     private FachadaHeladeras fachadaHeladeras;
-    private FachadaColaboradores facCol;
 
     public Fachada() {
         this.rutaRepo = new RutaRepo();
