@@ -1,9 +1,12 @@
 package ar.edu.utn.dds.k3003.extra;
 
+import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.model.Ruta;
 
 public class RutaMapper {
-    public Ruta Ruta(Ruta ruta) {
-        return new Ruta(ruta.getColaboradorId(), ruta.getHeladeraIdOrigen(), ruta.getHeladeraIdDestino());
+    public RutaDTO map(Ruta ruta) {
+        RutaDTO rutaDTO = new RutaDTO(ruta.getColaboradorId(), ruta.getHeladeraIdOrigen(), ruta.getHeladeraIdDestino());
+        rutaDTO.setId(ruta.getId());
+        return rutaDTO;
     }
 }
