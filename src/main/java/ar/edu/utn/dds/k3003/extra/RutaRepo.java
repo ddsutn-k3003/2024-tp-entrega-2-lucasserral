@@ -6,8 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.swing.text.html.Option;
-
 import ar.edu.utn.dds.k3003.model.Ruta;
 
 public class RutaRepo {
