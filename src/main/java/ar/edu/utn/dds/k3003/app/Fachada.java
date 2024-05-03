@@ -11,6 +11,7 @@ import ar.edu.utn.dds.k3003.extra.TrasladoRepo;
 import ar.edu.utn.dds.k3003.facades.FachadaHeladeras;
 import ar.edu.utn.dds.k3003.facades.FachadaViandas;
 import ar.edu.utn.dds.k3003.facades.dtos.EstadoTrasladoEnum;
+import ar.edu.utn.dds.k3003.facades.dtos.RetiroDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.RutaDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.TrasladoDTO;
 import ar.edu.utn.dds.k3003.facades.dtos.ViandaDTO;
@@ -25,6 +26,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     private RutaMapper rutaMapper;
     private TrasladoMapper trasladoMapper;
     private FachadaViandas fachadaViandas;
+    private FachadaHeladeras fachadaHeladeras;
 
     public Fachada() {
         this.rutaRepo = new RutaRepo();
@@ -51,6 +53,10 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     public TrasladoDTO asignarTraslado(TrasladoDTO trasladoDTO) throws TrasladoNoAsignableException {
         ViandaDTO viandaDTO = fachadaViandas.buscarXQR(trasladoDTO.getQrVianda());
 
+        if (Objects.isNull(viandaDTO)) {
+            throw new NoSuchElementException();
+        }
+
         Ruta ruta = this.rutaRepo.findByHeladeras(trasladoDTO.getHeladeraOrigen(),
                 trasladoDTO.getHeladeraDestino());
 
@@ -71,8 +77,11 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     }
 
     @Override
-    public void trasladoRetirado(Long arg0) {
-        // TODO Auto-generated method stub
+    public void trasladoRetirado(Long trasladoId) {
+        Traslado traslado = trasladoRepo.findById(trasladoId);
+        String qrVianda = traslado.getQrVianda();
+
+        this.fachadaHeladeras.retirar(new RetiroDTO(qrVianda, null, null));
 
     }
 
@@ -83,14 +92,12 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     }
 
     @Override
-    public void setHeladerasProxy(FachadaHeladeras arg0) {
-        // TODO Auto-generated method stub
-
+    public void setHeladerasProxy(FachadaHeladeras fachadaHeladeras) {
+        this.fachadaHeladeras = fachadaHeladeras;
     }
 
     @Override
     public void setViandasProxy(FachadaViandas fachadaViandas) {
         this.fachadaViandas = fachadaViandas;
-
     }
 }
