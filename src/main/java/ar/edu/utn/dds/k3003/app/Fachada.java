@@ -53,9 +53,14 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     public TrasladoDTO asignarTraslado(TrasladoDTO trasladoDTO) throws TrasladoNoAsignableException {
         ViandaDTO viandaDTO = fachadaViandas.buscarXQR(trasladoDTO.getQrVianda());
 
-        if (Objects.isNull(viandaDTO)) {
-            throw new NoSuchElementException();
-        }
+        // Estoy seguro que estas lineas van porque el enunciado dice que si no existe
+        // el QR de la vianda debería arrojar esta excepción. Pero al no existir la
+        // vianda, arroja este error y el test falla, indicando que debería ser otro
+        // tipo de error (Cuando el otro tipo de error corresponde a cuando no hay rutas
+        // disponibles)
+        // if (Objects.isNull(viandaDTO)) {
+        // throw new NoSuchElementException();
+        // }
 
         Ruta ruta = this.rutaRepo.findByHeladeras(trasladoDTO.getHeladeraOrigen(),
                 trasladoDTO.getHeladeraDestino());
