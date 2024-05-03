@@ -2,6 +2,7 @@ package ar.edu.utn.dds.k3003.app;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import ar.edu.utn.dds.k3003.extra.RutaMapper;
 import ar.edu.utn.dds.k3003.extra.RutaRepo;
@@ -52,6 +53,10 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
 
         Ruta ruta = this.rutaRepo.findByHeladeras(trasladoDTO.getHeladeraOrigen(),
                 trasladoDTO.getHeladeraDestino());
+
+        if (Objects.isNull(ruta)) {
+            throw new TrasladoNoAsignableException();
+        }
 
         Traslado traslado = trasladoRepo.save(new Traslado(viandaDTO.getCodigoQR(), ruta, EstadoTrasladoEnum.ASIGNADO,
                 trasladoDTO.getFechaTraslado(), ruta.getColaboradorId()));

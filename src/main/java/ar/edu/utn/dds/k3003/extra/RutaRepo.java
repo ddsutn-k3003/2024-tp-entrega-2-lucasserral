@@ -45,12 +45,13 @@ public class RutaRepo {
 
     public Ruta findByHeladeras(Integer heladeraOrigen, Integer heladeraDestino) {
         List<Ruta> rutas = this.filterByHeladeras(heladeraOrigen, heladeraDestino);
+        Ruta ruta;
         if (rutas.isEmpty()) {
-            throw new NoSuchElementException();
+            ruta = null;
         } else {
-            Ruta ruta = rutas.get(0);
-            return ruta;
+            ruta = rutas.get(0);
         }
+        return ruta;
     }
 
 }
