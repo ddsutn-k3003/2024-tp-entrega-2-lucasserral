@@ -1,0 +1,5 @@
+{
+  "workbench.editor.tabSizing": "fixed",
+  "workbench.editor.tabSizingFixedMinWidth": 100,
+  "workbench.editor.tabSizingFixedMaxWidth": 200
+}
