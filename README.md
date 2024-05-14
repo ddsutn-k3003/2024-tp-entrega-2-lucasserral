@@ -2,4 +2,4 @@
 
 # Serral, Lucas Gabriel
 
-Template para TP DDS 2024 - Entrega 1
+Repositorio pisado según lo existente en Entrega 1
