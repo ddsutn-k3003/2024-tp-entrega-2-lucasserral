@@ -46,13 +46,13 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
     @Override
     public TrasladoDTO buscarXId(Long trasladoId) throws NoSuchElementException {
         Traslado tralsado = this.trasladoRepo.findById(trasladoId);
-        return new TrasladoDTO(tralsado.getQrVianda(), tralsado.getRuta().getHeladeraIdOrigen(),
-                tralsado.getRuta().getHeladeraIdDestino());
+        TrasladoMapper trasladoMapper = new TrasladoMapper();
+        return trasladoMapper.map(tralsado);
     }
 
     @Override
     public TrasladoDTO asignarTraslado(TrasladoDTO trasladoDTO) throws TrasladoNoAsignableException {
-        ViandaDTO viandaDTO = fachadaViandas.buscarXQR(trasladoDTO.getQrVianda());
+        ViandaDTO viandaDTO = this.fachadaViandas.buscarXQR(trasladoDTO.getQrVianda());
 
         // Estoy seguro que estas lineas van porque el enunciado dice que si no existe
         // el QR de la vianda debería arrojar esta excepción. Pero al no existir la
@@ -102,6 +102,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
 
         this.fachadaHeladeras.retirar(new RetiroDTO(qrVianda, null, traslado.getRuta().getHeladeraIdOrigen()));
         this.fachadaViandas.modificarEstado(qrVianda, EstadoViandaEnum.EN_TRASLADO);
+        traslado.setEstado(EstadoTrasladoEnum.EN_VIAJE);
     }
 
     @Override
@@ -111,6 +112,7 @@ public class Fachada implements ar.edu.utn.dds.k3003.facades.FachadaLogistica {
 
         this.fachadaViandas.modificarHeladera(qrVianda, traslado.getRuta().getHeladeraIdDestino());
         this.fachadaViandas.modificarEstado(qrVianda, EstadoViandaEnum.DEPOSITADA);
+        traslado.setEstado(EstadoTrasladoEnum.ENTREGADO);
     }
 
     @Override
